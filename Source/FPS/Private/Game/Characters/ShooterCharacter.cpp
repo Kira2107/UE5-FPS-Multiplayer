@@ -1,8 +1,6 @@
 // Copyright by Hritish Duvvur
 
-
 #include "Game/Characters/ShooterCharacter.h"
-
 #include "Camera/CameraComponent.h"
 #include "Components/SkeletalMeshComponent.h"
 #include "GameFramework/SpringArmComponent.h"
