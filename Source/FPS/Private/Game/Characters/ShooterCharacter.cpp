@@ -3,6 +3,7 @@
 #include "Game/Characters/ShooterCharacter.h"
 #include "Camera/CameraComponent.h"
 #include "Components/SkeletalMeshComponent.h"
+#include "Game/Combat/CombatComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/SpringArmComponent.h"
 
@@ -41,6 +42,10 @@ AShooterCharacter::AShooterCharacter()
 	GetMesh() -> bOnlyOwnerSee = false;
 	GetMesh() -> bOwnerNoSee = true;
 	GetMesh() -> bReceivesDecals = false;
+	
+	//Combat Component
+	Combat = CreateDefaultSubobject<UCombatComponent>(TEXT("Combat"));
+	Combat -> SetIsReplicated(true);
 
 }
 
