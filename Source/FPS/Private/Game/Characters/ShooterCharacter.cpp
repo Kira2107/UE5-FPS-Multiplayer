@@ -1,6 +1,8 @@
 // Copyright by Hritish Duvvur
 
 #include "Game/Characters/ShooterCharacter.h"
+
+#include "EnhancedInputComponent.h"
 #include "Camera/CameraComponent.h"
 #include "Components/SkeletalMeshComponent.h"
 #include "Game/Combat/CombatComponent.h"
@@ -67,6 +69,49 @@ void AShooterCharacter::Tick(float DeltaTime)
 void AShooterCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
-
+	
+	UEnhancedInputComponent* ShooterInputComponent = CastChecked<UEnhancedInputComponent>(PlayerInputComponent);
+	
+	//Binding Combat Input Actions
+	ShooterInputComponent -> BindAction(CycleWeaponAction, ETriggerEvent::Started, this, &AShooterCharacter::Input_CycleWeapon);
+	ShooterInputComponent -> BindAction(ReloadWeaponAction, ETriggerEvent::Started, this, &AShooterCharacter::Input_ReloadWeapon);
+	ShooterInputComponent -> BindAction(FireWeaponAction, ETriggerEvent::Started, this, &AShooterCharacter::Input_FireWeapon_Pressed);
+	ShooterInputComponent -> BindAction(FireWeaponAction, ETriggerEvent::Completed, this, &AShooterCharacter::Input_FireWeapon_Released);
+	ShooterInputComponent -> BindAction(AimWeaponAction, ETriggerEvent::Started, this, &AShooterCharacter::Input_AimWeaponPressed);
+	ShooterInputComponent -> BindAction(AimWeaponAction, ETriggerEvent::Completed, this, &AShooterCharacter::Input_AimWeaponReleased);
 }
+
+void AShooterCharacter::Input_CycleWeapon()
+{
+	Combat -> Initiate_CycleWeapon();
+}
+
+void AShooterCharacter::Input_ReloadWeapon()
+{
+	Combat -> Initiate_ReloadWeapon();
+}
+
+void AShooterCharacter::Input_FireWeapon_Pressed()
+{
+	Combat -> Initiate_FireWeapon_Pressed();
+}
+
+void AShooterCharacter::Input_FireWeapon_Released()
+{
+	Combat -> Initiate_FireWeapon_Released();
+}
+
+void AShooterCharacter::Input_AimWeaponPressed()
+{
+	Combat -> Initiate_AimWeaponPressed();
+}
+
+void AShooterCharacter::Input_AimWeaponReleased()
+{
+	Combat -> Initiate_AimWeaponReleased();
+}
+
+
+
+
 

@@ -32,8 +32,8 @@ public:
 	void Initiate_ReloadWeapon();
 	
 	//Weapon Aim
-	void Initiate_AimPressed();
-	void Initiate_AimReleased();
+	void Initiate_AimWeaponPressed();
+	void Initiate_AimWeaponReleased();
 	
 	
 protected:
