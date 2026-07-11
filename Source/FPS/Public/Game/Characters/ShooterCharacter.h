@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "Game/Interfaces/PlayerInterface.h"
 #include "GameFramework/Character.h"
 #include "ShooterCharacter.generated.h"
 
@@ -12,7 +13,7 @@ class UCameraComponent;
 class USpringArmComponent;
 
 UCLASS()
-class FPS_API AShooterCharacter : public ACharacter
+class FPS_API AShooterCharacter : public ACharacter, public IPlayerInterface
 {
 	GENERATED_BODY()
 
@@ -28,6 +29,12 @@ public:
 	
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
+	
+	virtual void PossessedBy(AController* NewController) override;
+	
+	/* Player Interface Functions */
+	virtual FName GetWeaponAttachPoint_Implementation(const FGameplayTag& WeaponType) const override;
+	/* Player Interface Functions End*/
 	
 private:
 	//Functions

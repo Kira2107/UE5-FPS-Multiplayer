@@ -4,8 +4,10 @@
 
 #include "CoreMinimal.h"
 #include "Components/ActorComponent.h"
+#include "Game/Data/WeaponData.h"
 #include "CombatComponent.generated.h"
 
+class AWeapon;
 
 UCLASS(ClassGroup=(Custom), meta=(BlueprintSpawnableComponent))
 class FPS_API UCombatComponent : public UActorComponent
@@ -13,6 +15,8 @@ class FPS_API UCombatComponent : public UActorComponent
 	GENERATED_BODY()
 
 public:
+	/* Public Functions */
+	
 	// Sets default values for this component's properties
 	UCombatComponent();
 
@@ -35,11 +39,29 @@ public:
 	void Initiate_AimWeaponPressed();
 	void Initiate_AimWeaponReleased();
 	
+	//
+	void SpawnInventory();
+	
+	void DestroyInventory();
+	
+	
+	
+	/* Public Variables */
+	
+	UPROPERTY(EditDefaultsOnly, Category = "FPS|Weapon")
+	TObjectPtr<UWeaponData> WeaponData;
+	
 	
 protected:
 	// Called when the game starts
 	virtual void BeginPlay() override;
 
 private:
+	
+	//
+	UPROPERTY(EditDefaultsOnly, Category = "FPS|Weapon")
+	TSubclassOf<AWeapon> DefaultWeaponClass;
+	
+	AWeapon* SpawnWeapon(TSubclassOf<AWeapon> WeaponClass) const;
 	
 };

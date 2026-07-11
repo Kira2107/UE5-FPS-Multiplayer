@@ -4,6 +4,8 @@
 #include "Game/Combat/CombatComponent.h"
 
 #include "Engine/Engine.h"
+#include "Game/Weapons/Weapon.h"
+#include "GameFramework/Pawn.h"
 
 
 // Sets default values for this component's properties
@@ -55,5 +57,31 @@ void UCombatComponent::Initiate_AimWeaponPressed()
 void UCombatComponent::Initiate_AimWeaponReleased()
 {
 	GEngine -> AddOnScreenDebugMessage(-1, 5.f, FColor::Green, TEXT("Aim Weapon Released"));
+}
+
+AWeapon* UCombatComponent::SpawnWeapon(TSubclassOf<AWeapon> WeaponClass) const
+{
+	AActor* OwningActor = GetOwner();
+	if (!IsValid(OwningActor)) return nullptr;
+	if (OwningActor -> GetLocalRole() < ROLE_Authority) return nullptr; //Has Authority to Spawn
+	
+	//Set Info to Spawn Weapon
+	FActorSpawnParameters SpawnInfo;
+	SpawnInfo.Instigator = Cast<APawn>(OwningActor);
+	SpawnInfo.Owner = OwningActor;
+	SpawnInfo.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+	
+	//Return Weapon to Spawn and its Info
+	return GetWorld() -> SpawnActor<AWeapon>(WeaponClass, SpawnInfo);
+}
+
+void UCombatComponent::SpawnInventory()
+{
+	AWeapon* NewWeapon = SpawnWeapon(DefaultWeaponClass);
+}
+
+void UCombatComponent::DestroyInventory()
+{
+	// TODO Destroy Inventory when we have one
 }
 

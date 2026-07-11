@@ -58,6 +58,16 @@ void AShooterCharacter::BeginPlay()
 	
 }
 
+void AShooterCharacter::PossessedBy(AController* NewController)
+{
+	Super::PossessedBy(NewController);
+	
+	if (IsValid(Combat))
+	{
+		Combat -> SpawnInventory();
+	}
+}
+
 // Called every frame
 void AShooterCharacter::Tick(float DeltaTime)
 {
@@ -109,6 +119,12 @@ void AShooterCharacter::Input_AimWeaponPressed()
 void AShooterCharacter::Input_AimWeaponReleased()
 {
 	Combat -> Initiate_AimWeaponReleased();
+}
+
+FName AShooterCharacter::GetWeaponAttachPoint_Implementation(const FGameplayTag& WeaponType) const
+{
+	checkf(Combat -> WeaponData, TEXT("WeaponData is not set in CombatComponent"));
+	return Combat -> WeaponData -> GripPoints.FindChecked(WeaponType);
 }
 
 
