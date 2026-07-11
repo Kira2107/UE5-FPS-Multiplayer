@@ -41,10 +41,10 @@ public:
 	void Initiate_AimWeaponPressed();
 	void Initiate_AimWeaponReleased();
 	
-	//
+	//Inventory Functions
 	void SpawnInventory();
-	
 	void DestroyInventory();
+	void EquipWeapon(AWeapon* WeaponToEquip);
 	
 	
 	
@@ -55,10 +55,24 @@ public:
 	
 	
 protected:
+	/* Protected Functions */
+	
 	// Called when the game starts
 	virtual void BeginPlay() override;
 
 private:
+	/* Private Functions */
+	AWeapon* SpawnWeapon(TSubclassOf<AWeapon> WeaponClass) const;
+	
+	
+	/* Private Variables */
+	
+	//Current Weapon In Hand
+	UPROPERTY(Transient, ReplicatedUsing = OnRep_CurrentWeapon)
+	TObjectPtr<AWeapon> CurrentWeapon;
+	
+	UFUNCTION()
+	void OnRep_CurrentWeapon(AWeapon* LastWeapon); //Rep Notify - Called in response to a variable replicated
 	
 	//Inventory of Weapons to be Replicated
 	UPROPERTY(Transient, Replicated)
@@ -67,7 +81,5 @@ private:
 	//Default Weapons to Spawn
 	UPROPERTY(EditDefaultsOnly, Category = "FPS|Weapon")
 	TArray<TSubclassOf<AWeapon>> DefaultWeaponClasses;
-	
-	AWeapon* SpawnWeapon(TSubclassOf<AWeapon> WeaponClass) const;
 	
 };

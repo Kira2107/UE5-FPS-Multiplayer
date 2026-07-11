@@ -30,6 +30,8 @@ public:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 	
+	virtual void BeginDestroy() override;
+	
 	//Called when character is possessed
 	virtual void PossessedBy(AController* NewController) override;
 	
