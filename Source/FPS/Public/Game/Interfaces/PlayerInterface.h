@@ -27,4 +27,11 @@ public:
 	//Interface Function to call when we want to get the Weapon Attach Point for a specific Weapon
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
 	FName GetWeaponAttachPoint(const FGameplayTag& WeaponType) const;
+	
+	//Get Player Meshes
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
+	USkeletalMeshComponent* GetMesh1P() const;
+	
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
+	USkeletalMeshComponent* GetMesh3P() const;
 };

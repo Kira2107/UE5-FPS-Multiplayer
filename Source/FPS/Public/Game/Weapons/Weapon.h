@@ -16,9 +16,14 @@ public:
 	// Sets default values for this actor's properties
 	AWeapon();
 	
+	virtual void OnRep_Instigator() override;
+	
 	//Getter for Meshes
 	USkeletalMeshComponent* GetMesh1P() const { return Mesh1P; }
 	USkeletalMeshComponent* GetMesh3P() const { return Mesh3P; }
+	
+	//
+	void AttachToOwningPawn() const;
 
 protected:
 	// Called when the game starts or when spawned
@@ -29,6 +34,14 @@ protected:
 	FGameplayTag WeaponType;
 
 private:
+	
+	/* Functions */
+	
+	//Change Weapon Visibility based on Local Player or Not
+	void SetMeshVisibilities(APawn* OwningPawn) const;
+	
+	
+	/* Variables */
 	
 	//Weapon Mesh: First Person View
 	UPROPERTY(VisibleAnywhere)

@@ -6,6 +6,7 @@
 #include "Engine/Engine.h"
 #include "Game/Weapons/Weapon.h"
 #include "GameFramework/Pawn.h"
+#include "Net/UnrealNetwork.h"
 
 
 // Sets default values for this component's properties
@@ -27,6 +28,13 @@ void UCombatComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActo
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
+}
+
+void UCombatComponent::GetLifetimeReplicatedProps(TArray<class FLifetimeProperty>& OutLifetimeProps) const
+{
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+	
+	DOREPLIFETIME(UCombatComponent, Inventory);
 }
 
 void UCombatComponent::Initiate_CycleWeapon()
@@ -77,7 +85,21 @@ AWeapon* UCombatComponent::SpawnWeapon(TSubclassOf<AWeapon> WeaponClass) const
 
 void UCombatComponent::SpawnInventory()
 {
-	AWeapon* NewWeapon = SpawnWeapon(DefaultWeaponClass);
+	if (GetOwner() -> GetLocalRole() < ROLE_Authority) return; //Has Authority to Spawn
+	
+	for (TSubclassOf<AWeapon>& WeaponClass : DefaultWeaponClasses)
+	{
+		AWeapon* NewWeapon = SpawnWeapon(WeaponClass);
+		if (IsValid(NewWeapon))
+		{
+			Inventory.AddUnique(NewWeapon);
+		}
+	}
+	
+	if (Inventory.Num() > 0)
+	{
+		Inventory[0] -> AttachToOwningPawn();
+	}
 }
 
 void UCombatComponent::DestroyInventory()

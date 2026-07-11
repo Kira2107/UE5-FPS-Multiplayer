@@ -127,6 +127,18 @@ FName AShooterCharacter::GetWeaponAttachPoint_Implementation(const FGameplayTag&
 	return Combat -> WeaponData -> GripPoints.FindChecked(WeaponType);
 }
 
+USkeletalMeshComponent* AShooterCharacter::GetMesh1P_Implementation() const
+{
+	return Mesh1P;
+}
+
+USkeletalMeshComponent* AShooterCharacter::GetMesh3P_Implementation() const
+{
+	return GetMesh();
+}
+
+
+
 
 
 

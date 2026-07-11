@@ -23,6 +23,8 @@ public:
 	// Called every frame
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 	
+	virtual void GetLifetimeReplicatedProps(TArray<class FLifetimeProperty>& OutLifetimeProps) const override;
+	
 	//Combat Behavior Functions
 	
 	//Cycle to the Next Weapon in Inventory
@@ -58,9 +60,13 @@ protected:
 
 private:
 	
-	//
+	//Inventory of Weapons to be Replicated
+	UPROPERTY(Transient, Replicated)
+	TArray<AWeapon*> Inventory;
+	
+	//Default Weapons to Spawn
 	UPROPERTY(EditDefaultsOnly, Category = "FPS|Weapon")
-	TSubclassOf<AWeapon> DefaultWeaponClass;
+	TArray<TSubclassOf<AWeapon>> DefaultWeaponClasses;
 	
 	AWeapon* SpawnWeapon(TSubclassOf<AWeapon> WeaponClass) const;
 	

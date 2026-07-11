@@ -4,6 +4,8 @@
 #include "Game/Weapons/Weapon.h"
 
 #include "Components/SkeletalMeshComponent.h"
+#include "Game/Interfaces/PlayerInterface.h"
+#include "GameFramework/Pawn.h"
 
 
 // Sets default values
@@ -32,12 +34,52 @@ AWeapon::AWeapon()
 	Mesh3P -> SetHiddenInGame(true);
 }
 
+void AWeapon::OnRep_Instigator()
+{
+	Super::OnRep_Instigator();
+	
+	AttachToOwningPawn();
+}
+
 // Called when the game starts or when spawned
 void AWeapon::BeginPlay()
 {
 	Super::BeginPlay();
 	
 }
+
+void AWeapon::SetMeshVisibilities(APawn* OwningPawn) const
+{
+	if (OwningPawn -> IsLocallyControlled())
+	{
+		Mesh1P -> SetHiddenInGame(false);
+		Mesh3P -> SetHiddenInGame(true);
+	}
+	else
+	{
+		Mesh1P -> SetHiddenInGame(true);
+		Mesh3P -> SetHiddenInGame(false);
+	}
+}
+
+void AWeapon::AttachToOwningPawn() const
+{
+	APawn* OwningPawn = GetInstigator();
+	if (!IsValid(OwningPawn) || !OwningPawn->Implements<UPlayerInterface>()) return;
+	
+	SetMeshVisibilities(OwningPawn);
+	
+	//Get Attach Points
+	const FName AttachPoint = IPlayerInterface::Execute_GetWeaponAttachPoint(OwningPawn, WeaponType);
+	USkeletalMeshComponent* PawnMesh1P = IPlayerInterface::Execute_GetMesh1P(OwningPawn);
+	USkeletalMeshComponent* PawnMesh3P = IPlayerInterface::Execute_GetMesh3P(OwningPawn);
+	
+	//Attach to Socket
+	Mesh1P -> AttachToComponent(PawnMesh1P, FAttachmentTransformRules::KeepRelativeTransform, AttachPoint);
+	Mesh3P -> AttachToComponent(PawnMesh3P, FAttachmentTransformRules::KeepRelativeTransform, AttachPoint);
+}
+
+
 
 
 

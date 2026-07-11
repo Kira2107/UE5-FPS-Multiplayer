@@ -30,10 +30,13 @@ public:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 	
+	//Called when character is possessed
 	virtual void PossessedBy(AController* NewController) override;
 	
 	/* Player Interface Functions */
 	virtual FName GetWeaponAttachPoint_Implementation(const FGameplayTag& WeaponType) const override;
+	virtual USkeletalMeshComponent* GetMesh1P_Implementation() const override;
+	virtual USkeletalMeshComponent* GetMesh3P_Implementation() const override;
 	/* Player Interface Functions End*/
 	
 private:
