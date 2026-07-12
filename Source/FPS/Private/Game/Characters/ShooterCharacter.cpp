@@ -82,6 +82,21 @@ void AShooterCharacter::PossessedBy(AController* NewController)
 	}
 }
 
+FRotator AShooterCharacter::GetFixedAimRotation() const
+{
+	FRotator AimRotation = GetBaseAimRotation();
+	
+	//Map Pitch from Space its in to Space we can Use
+	//i.e If Pitch is from [270,360) we need to convert it to [-90,0]
+	if (AimRotation.Pitch >90.f && !IsLocallyControlled())
+	{
+		const FVector2D InRange(270.f, 360.f);
+		const FVector2D OutRange(-90.f, 0.f);
+		AimRotation.Pitch = FMath::GetMappedRangeValueClamped(InRange, OutRange, AimRotation.Pitch);
+	}
+	return AimRotation;
+}
+
 // Called every frame
 void AShooterCharacter::Tick(float DeltaTime)
 {

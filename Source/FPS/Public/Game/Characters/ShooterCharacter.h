@@ -18,6 +18,8 @@ class FPS_API AShooterCharacter : public ACharacter, public IPlayerInterface
 	GENERATED_BODY()
 
 public:
+	/* Public Functions */
+	
 	// Sets default values for this character's properties
 	AShooterCharacter();
 	
@@ -35,11 +37,18 @@ public:
 	//Called when character is possessed
 	virtual void PossessedBy(AController* NewController) override;
 	
+	//Fix the Characters Aim Rotation when Replicated in MultiPlayer
+	UFUNCTION(BlueprintCallable)
+	FRotator GetFixedAimRotation() const;
+	
 	/* Player Interface Functions */
 	virtual FName GetWeaponAttachPoint_Implementation(const FGameplayTag& WeaponType) const override;
 	virtual USkeletalMeshComponent* GetMesh1P_Implementation() const override;
 	virtual USkeletalMeshComponent* GetMesh3P_Implementation() const override;
 	/* Player Interface Functions End*/
+	
+	
+	/* Public Variables */
 	
 	//Combat Component
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="FPS|Combat")
