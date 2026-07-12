@@ -45,6 +45,24 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="FPS|Combat")
 	TObjectPtr<UCombatComponent> Combat;
 	
+	
+protected:
+	/* Protected Functions */
+	
+	
+	/* Protected Variables */
+	
+	//Camera Variables
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="FPS|Camera")
+	float DefaultCameraFOV;
+	
+	//Function to call when ADS is being used
+	UFUNCTION(BlueprintImplementableEvent)
+	void OnAim(bool bIsAiming);
+	
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="FPS|Camera")
+	TObjectPtr<UCameraComponent> FirstPersonCamera;
+	
 private:
 	//Functions
 	
@@ -72,7 +90,6 @@ private:
 	UPROPERTY(EditAnywhere, Category="FPS|Input")
 	TObjectPtr<UInputAction> AimWeaponAction;
 	
-	
 	//1st Person View (Just the arms)
 	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<USkeletalMeshComponent> Mesh1P;
@@ -80,6 +97,5 @@ private:
 	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<USpringArmComponent> SpringArm;
 	
-	UPROPERTY(VisibleAnywhere)
-	TObjectPtr<UCameraComponent> FirstPersonCamera;
+
 };

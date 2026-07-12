@@ -13,6 +13,8 @@ class FPS_API AWeapon : public AActor
 	GENERATED_BODY()
 
 public:
+	/* Public Functions */
+	
 	// Sets default values for this actor's properties
 	AWeapon();
 	
@@ -25,9 +27,16 @@ public:
 	//
 	void AttachToOwningPawn() const;
 	
+	
+	/* Public Variables */
+	
 	//Weapon Type Tag
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="FPS|WeaponType")
 	FGameplayTag WeaponType;
+	
+	//
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="FPS|Aiming")
+	float AimFOV;
 
 protected:
 	// Called when the game starts or when spawned

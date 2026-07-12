@@ -36,7 +36,10 @@ void UCombatComponent::GetLifetimeReplicatedProps(TArray<class FLifetimeProperty
 	
 	DOREPLIFETIME(UCombatComponent, Inventory);
 	DOREPLIFETIME(UCombatComponent, CurrentWeapon);
+	DOREPLIFETIME_CONDITION(UCombatComponent, bIsAiming, COND_SkipOwner); //Aiming is set locally, other players can see, server doesnt
 }
+
+
 
 void UCombatComponent::OnRep_CurrentWeapon(AWeapon* LastWeapon)
 {
@@ -67,12 +70,24 @@ void UCombatComponent::Initiate_ReloadWeapon()
 
 void UCombatComponent::Initiate_AimWeaponPressed()
 {
-	GEngine -> AddOnScreenDebugMessage(-1, 5.f, FColor::Green, TEXT("Aim Weapon Pressed"));
+	Local_Aim(true); //Set Local Aiming to true
+	Server_Aim(true); //Send Server the value of aiming so every other player knows
 }
 
 void UCombatComponent::Initiate_AimWeaponReleased()
 {
-	GEngine -> AddOnScreenDebugMessage(-1, 5.f, FColor::Green, TEXT("Aim Weapon Released"));
+	Local_Aim(false); //Set Local Aiming to false
+	Server_Aim(false); //Send Server the value of aiming so every other player knows
+}
+
+void UCombatComponent::Server_Aim_Implementation(bool bPressed)
+{
+	Local_Aim(bPressed);
+}
+
+void UCombatComponent::Local_Aim(bool bPressed)
+{
+	bIsAiming = bPressed;
 }
 
 AWeapon* UCombatComponent::SpawnWeapon(TSubclassOf<AWeapon> WeaponClass) const

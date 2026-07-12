@@ -53,6 +53,9 @@ public:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "FPS|Weapon")
 	TObjectPtr<UWeaponData> WeaponData;
 	
+	UPROPERTY(BlueprintReadOnly, Replicated)
+	bool bIsAiming;
+	
 	
 protected:
 	/* Protected Functions */
@@ -67,6 +70,13 @@ protected:
 private:
 	/* Private Functions */
 	AWeapon* SpawnWeapon(TSubclassOf<AWeapon> WeaponClass) const;
+	
+	//Server RPC Call
+	UFUNCTION(Server, Reliable)
+	void Server_Aim(bool bPressed);
+	
+	//Local Function to handle Aim Functionality
+	void Local_Aim(bool bPressed);
 	
 	
 	/* Private Variables */
