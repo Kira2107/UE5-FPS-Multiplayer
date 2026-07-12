@@ -26,7 +26,7 @@ public:
 	void AttachToOwningPawn() const;
 	
 	//Weapon Type Tag
-	UPROPERTY(EditAnywhere, Category="FPS|WeaponType")
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="FPS|WeaponType")
 	FGameplayTag WeaponType;
 
 protected:

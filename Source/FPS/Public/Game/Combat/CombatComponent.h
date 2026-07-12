@@ -50,7 +50,7 @@ public:
 	
 	/* Public Variables */
 	
-	UPROPERTY(EditDefaultsOnly, Category = "FPS|Weapon")
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "FPS|Weapon")
 	TObjectPtr<UWeaponData> WeaponData;
 	
 	
@@ -59,6 +59,10 @@ protected:
 	
 	// Called when the game starts
 	virtual void BeginPlay() override;
+	
+	//Current Weapon In Hand
+	UPROPERTY(Transient, BlueprintReadOnly, ReplicatedUsing = OnRep_CurrentWeapon)
+	TObjectPtr<AWeapon> CurrentWeapon;
 
 private:
 	/* Private Functions */
@@ -66,10 +70,6 @@ private:
 	
 	
 	/* Private Variables */
-	
-	//Current Weapon In Hand
-	UPROPERTY(Transient, ReplicatedUsing = OnRep_CurrentWeapon)
-	TObjectPtr<AWeapon> CurrentWeapon;
 	
 	UFUNCTION()
 	void OnRep_CurrentWeapon(AWeapon* LastWeapon); //Rep Notify - Called in response to a variable replicated

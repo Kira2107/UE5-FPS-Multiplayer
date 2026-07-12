@@ -41,6 +41,10 @@ public:
 	virtual USkeletalMeshComponent* GetMesh3P_Implementation() const override;
 	/* Player Interface Functions End*/
 	
+	//Combat Component
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="FPS|Combat")
+	TObjectPtr<UCombatComponent> Combat;
+	
 private:
 	//Functions
 	
@@ -54,10 +58,6 @@ private:
 	
 	
 	//Variables
-	
-	//Combat Component
-	UPROPERTY(VisibleAnywhere)
-	TObjectPtr<UCombatComponent> Combat;
 	
 	//Combat Weapon Input Actions
 	UPROPERTY(EditAnywhere, Category="FPS|Input")
