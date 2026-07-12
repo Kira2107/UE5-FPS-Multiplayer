@@ -24,14 +24,14 @@ public:
 	
 	//
 	void AttachToOwningPawn() const;
-
-protected:
-	// Called when the game starts or when spawned
-	virtual void BeginPlay() override;
 	
 	//Weapon Type Tag
 	UPROPERTY(EditAnywhere, Category="FPS|WeaponType")
 	FGameplayTag WeaponType;
+
+protected:
+	// Called when the game starts or when spawned
+	virtual void BeginPlay() override;
 
 private:
 	
