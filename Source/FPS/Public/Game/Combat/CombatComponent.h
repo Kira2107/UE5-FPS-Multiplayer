@@ -56,16 +56,15 @@ public:
 	UPROPERTY(BlueprintReadOnly, Replicated)
 	bool bIsAiming;
 	
+	//Current Weapon In Hand
+	UPROPERTY(Transient, BlueprintReadOnly, ReplicatedUsing = OnRep_CurrentWeapon)
+	TObjectPtr<AWeapon> CurrentWeapon;
 	
 protected:
 	/* Protected Functions */
 	
 	// Called when the game starts
 	virtual void BeginPlay() override;
-	
-	//Current Weapon In Hand
-	UPROPERTY(Transient, BlueprintReadOnly, ReplicatedUsing = OnRep_CurrentWeapon)
-	TObjectPtr<AWeapon> CurrentWeapon;
 
 private:
 	/* Private Functions */

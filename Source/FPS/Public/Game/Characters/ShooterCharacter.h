@@ -54,6 +54,10 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="FPS|Combat")
 	TObjectPtr<UCombatComponent> Combat;
 	
+	//
+	UPROPERTY(BlueprintReadOnly, Category="FPS|FABRIK")
+	FTransform FABRIK_SocketTransform;
+	
 	
 protected:
 	/* Protected Functions */
@@ -82,6 +86,9 @@ private:
 	void Input_FireWeapon_Released();
 	void Input_AimWeaponPressed();
 	void Input_AimWeaponReleased();
+	
+	//Function to Calculate Socket Transform
+	void CalculateFABRIKSocketTransform();
 	
 	
 	//Variables
