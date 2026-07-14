@@ -6,9 +6,11 @@
 #include "Camera/CameraComponent.h"
 #include "Components/SkeletalMeshComponent.h"
 #include "Game/Combat/CombatComponent.h"
+#include "Game/ShooterTypes/ShooterTypes.h"
 #include "Game/Weapons/Weapon.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/SpringArmComponent.h"
+#include "Kismet/KismetMathLibrary.h"
 
 // Sets default values
 AShooterCharacter::AShooterCharacter()
@@ -52,6 +54,8 @@ AShooterCharacter::AShooterCharacter()
 	
 	//Camera Variables
 	DefaultCameraFOV = 90.f;
+	
+	TurningStatus = ETurningInPlace::NotTurning;
 
 }
 
@@ -61,6 +65,9 @@ void AShooterCharacter::BeginPlay()
 	Super::BeginPlay();
 	
 	FirstPersonCamera -> SetFieldOfView(DefaultCameraFOV);
+	
+	//initial aim rot is calculated in begin play
+	StartingAimRotation = FRotator(0.f,GetBaseAimRotation().Yaw, 0.f);
 }
 
 void AShooterCharacter::BeginDestroy()
@@ -103,6 +110,7 @@ void AShooterCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 	
+	CalculateTurnInPlaceParameters(DeltaTime);
 	CalculateFABRIKSocketTransform();
 }
 
@@ -170,6 +178,11 @@ USkeletalMeshComponent* AShooterCharacter::GetMesh3P_Implementation() const
 	return GetMesh();
 }
 
+bool AShooterCharacter::HasCurrentWeapon() const
+{
+	return IsValid(Combat) && Combat -> CurrentWeapon != nullptr;
+}
+
 void AShooterCharacter::CalculateFABRIKSocketTransform()
 {
 	if (IsValid(Combat) && IsValid(Combat -> CurrentWeapon) && IsValid(Combat -> CurrentWeapon -> GetMesh3P()))
@@ -185,6 +198,79 @@ void AShooterCharacter::CalculateFABRIKSocketTransform()
 		FABRIK_SocketTransform.SetRotation(OutRotation.Quaternion());
 	}
 }
+
+void AShooterCharacter::CalculateTurnInPlaceParameters(float DeltaTime)
+{
+	// Get Velocity to see if we are running, if 0 we are still
+	FVector Velocity = GetVelocity();
+	float Speed = Velocity.Size2D();
+	
+	//See if we are falling
+	bool bIsInAir = GetCharacterMovement() -> IsFalling();
+	
+	//If standing still and not jumping
+	if (Speed == 0.f && !bIsInAir)
+	{
+		//get current aim rotation
+		FRotator CurrentAimRotation(0.f, GetBaseAimRotation().Yaw, 0.f);
+		
+		//delta aim rotation - diff in current aim from initial aim
+		FRotator DeltaAimRotation = UKismetMathLibrary::NormalizedDeltaRotator(CurrentAimRotation, StartingAimRotation);
+		
+		//Store yaw of the delta aim rotation (AO_Yaw)
+		AO_Yaw = DeltaAimRotation.Yaw;
+		
+		if(TurningStatus == ETurningInPlace::NotTurning)
+		{
+			//Set InterpAO_Yaw to AO_Yaw
+			InterpAO_Yaw = AO_Yaw;
+		}
+		
+		TurnInPlace(DeltaTime); //Interp the InterpAO_Yaw value to 0
+	}
+		
+	if (Speed > 0.f || bIsInAir)
+	{
+		StartingAimRotation = FRotator(0.f, GetBaseAimRotation().Yaw, 0.f);
+		AO_Yaw = 0.f;
+		
+		FRotator AimRotation = GetBaseAimRotation();
+		FRotator MovementRotation = UKismetMathLibrary::MakeRotFromX(GetVelocity());
+		MovementOffsetYaw = UKismetMathLibrary::NormalizedDeltaRotator(MovementRotation, AimRotation).Yaw;
+		TurningStatus = ETurningInPlace::NotTurning;
+	}
+	
+	AO_Yaw *= -1.f;
+}
+
+void AShooterCharacter::TurnInPlace(float DeltaTime)
+{
+	if (AO_Yaw > 90.f)
+	{
+		//TurningStatus = TurningRight
+		TurningStatus = ETurningInPlace::TurningRight;
+	}
+	else if (AO_Yaw < -90.f)
+	{
+		//TurningStatus = TurningLeft
+		TurningStatus = ETurningInPlace::TurningLeft;
+	}
+	
+	if (TurningStatus != ETurningInPlace::NotTurning) //We are Turning, so time to interp
+	{
+		InterpAO_Yaw = FMath::FInterpTo(InterpAO_Yaw, 0.f, DeltaTime, 4.f);
+		AO_Yaw = InterpAO_Yaw;
+		
+		if (FMath::Abs(AO_Yaw) < 5.f)
+		{
+			TurningStatus = ETurningInPlace::NotTurning;
+			
+			//Reset initial aim rot to actual aim rot
+			StartingAimRotation = FRotator(0.f, GetBaseAimRotation().Yaw, 0.f);
+		}
+	}
+}
+
 
 
 

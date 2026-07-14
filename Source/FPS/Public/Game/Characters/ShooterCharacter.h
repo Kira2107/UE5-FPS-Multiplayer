@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Game/Interfaces/PlayerInterface.h"
+#include "Game/ShooterTypes/ShooterTypes.h"
 #include "GameFramework/Character.h"
 #include "ShooterCharacter.generated.h"
 
@@ -54,9 +55,13 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="FPS|Combat")
 	TObjectPtr<UCombatComponent> Combat;
 	
-	//
+	//Return FABRIK Socket on the Weapon in Bone Space
 	UPROPERTY(BlueprintReadOnly, Category="FPS|FABRIK")
 	FTransform FABRIK_SocketTransform;
+	
+	//To fix ABP and to now have FABRIK break the model if we dont have a weapon
+	UFUNCTION(BlueprintCallable)
+	bool HasCurrentWeapon() const;
 	
 	
 protected:
@@ -76,6 +81,18 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="FPS|Camera")
 	TObjectPtr<UCameraComponent> FirstPersonCamera;
 	
+	//
+	UPROPERTY(BlueprintReadOnly, Category="FPS|TurnInPlace")
+	float AO_Yaw;
+	
+	//
+	UPROPERTY(BlueprintReadOnly, Category="FPS|Strafing")
+	float MovementOffsetYaw;
+	
+	//Tunrnig in Place Enum
+	UPROPERTY(BlueprintReadOnly, Category="FPS|TurnInPlace")
+	ETurningInPlace TurningStatus;
+	
 private:
 	//Functions
 	
@@ -89,6 +106,12 @@ private:
 	
 	//Function to Calculate Socket Transform
 	void CalculateFABRIKSocketTransform();
+	
+	//
+	void CalculateTurnInPlaceParameters(float DeltaTime);
+	
+	//
+	void TurnInPlace(float DeltaTime);
 	
 	
 	//Variables
@@ -113,5 +136,9 @@ private:
 	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<USpringArmComponent> SpringArm;
 	
+	//Initial Aim Rotation
+	FRotator StartingAimRotation;
+	
+	float InterpAO_Yaw;
 
 };
