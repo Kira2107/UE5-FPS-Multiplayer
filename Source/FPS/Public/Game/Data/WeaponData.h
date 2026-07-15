@@ -7,6 +7,7 @@
 #include "Engine/DataAsset.h"
 #include "WeaponData.generated.h"
 
+class UAnimMontage;
 class UBlendSpace;
 class UAnimSequence;
 
@@ -40,6 +41,24 @@ struct FPlayerAnims
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "FPS|WeaponData|Anims")
 	TObjectPtr<UBlendSpace> Strafe_Crouching;
 };
+
+USTRUCT(BlueprintType)
+struct FMontageData
+{
+	GENERATED_BODY()
+	
+	//Weapon Equip Montage
+	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly)
+	TObjectPtr<UAnimMontage> EquipMontage = nullptr;
+	
+	//Weapon Reload Montage
+	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly)
+	TObjectPtr<UAnimMontage> ReloadMontage = nullptr;
+	
+	//Weapon Fire Montage
+	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly)
+	TObjectPtr<UAnimMontage> FireMontage = nullptr;
+};
 /**
  * Data asset for defining weapon properties and behavior.
  */
@@ -53,9 +72,18 @@ public:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "FPS|WeaponData|Weapons")
 	TMap<FGameplayTag, FName> GripPoints; //Map for Weapon and which Socket in the Mesh it should be held
 	
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "FPS|WeaponData|Weapons")
+	TMap<FGameplayTag, FMontageData> WeaponMontages; //Map for Weapon and its Montages
+	
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "FPS|WeaponData|FirstPerson")
 	TMap<FGameplayTag, FPlayerAnims> FirstPersonAnims; //Map for Weapon and its Anims
 	
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "FPS|WeaponData|ThirdPerson")
 	TMap<FGameplayTag, FPlayerAnims> ThirdPersonAnims; //Map for Weapon and its Anims
+	
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "FPS|WeaponData|FirstPerson")
+	TMap<FGameplayTag, FMontageData> FirstPersonMontage; //Map for Weapon and its First Person Montages
+	
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "FPS|WeaponData|ThirdPerson")
+	TMap<FGameplayTag, FMontageData> ThirdPersonMontage; //Map for Weapon and its Third Person Montages
 };
